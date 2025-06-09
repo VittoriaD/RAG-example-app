@@ -30,7 +30,7 @@ with col1:
 
 with col2:
     if st.button("Ingest articles"):
-        entries, full_sections = processor.process(limit=None)
+        entries, full_sections = processor.process(limit=5)
         milvus_store.insert_entries(entries)
         milvus_store.create_index()
         st.session_state["full_sections"] = full_sections

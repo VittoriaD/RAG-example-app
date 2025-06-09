@@ -68,7 +68,7 @@ class TheBatchScraper:
 
         return {'page_name': page_name, 'content': content, 'soup': soup}
 
-    def scrape_latest(self, limit=30):
+    def scrape_latest(self, limit=3):
         results = []
         for url in self.get_article_links(limit=limit):
             print(f"Scraping: {url}")

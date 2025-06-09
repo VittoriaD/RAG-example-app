@@ -5,6 +5,8 @@ import os
 
 
 class MilvusVectorStore:
+    MIN_SIMILARITY_THRESHOLD = 0.8
+
     def __init__(self, name="multimodal_rag", dim=512, embedder=None):
         self.name = name
         self.dim = dim
@@ -81,7 +83,7 @@ class MilvusVectorStore:
             text_hits.append((score, hit))
 
         text_hits.sort(reverse=True, key=lambda x: x[0])
-        top_text_hits = [hit for score, hit in text_hits[:rerank_k]]
+        top_text_hits = [(score, hit) for score, hit in text_hits[:rerank_k] if score >= self.MIN_SIMILARITY_THRESHOLD]
 
         image_hits = self.collection.search(
             data=[query_vec],
@@ -99,9 +101,9 @@ class MilvusVectorStore:
             scored_hits.append((score, hit))
 
         scored_hits.sort(reverse=True, key=lambda x: x[0])
-        reranked_image_hits = [hit for score, hit in scored_hits[:1]]
-
-        return [*top_text_hits, *reranked_image_hits]
+        reranked_image_hits = [(score, hit) for score, hit in scored_hits[:1] if score >= self.MIN_SIMILARITY_THRESHOLD]
+        final_hits = [hit for score, hit in top_text_hits + reranked_image_hits]
+        return final_hits if final_hits else []
 
     def reset_storage(self):
         if self.collection is not None:
