@@ -49,7 +49,7 @@ class MilvusVectorStore:
     def create_index(self):
         self.collection.create_index("embedding", {
             "index_type": "IVF_FLAT",
-            "metric_type": "L2",
+            "metric_type": "COSINE",
             "params": {"nlist": 128}
         })
         self.collection.load()

@@ -52,7 +52,6 @@ class TheBatchScraper:
         for sub_article in sub_articles:
             name = sub_article.text.strip()
             paragraphs = []
-            images = []
 
             next_sibling = sub_article.next_sibling
             while next_sibling and next_sibling.name != 'h1':
